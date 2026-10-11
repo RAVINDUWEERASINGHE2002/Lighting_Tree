@@ -139,7 +139,7 @@ export const ItemList: React.FC<ItemListProps> = ({
                           <input
                             type="number"
                             min="0"
-                            step="10"
+                            step="any"
                             value={currentEditValue}
                             onChange={(e) => handlePriceChange(item.id, e.target.value)}
                             onBlur={() => handlePriceSave(item.id, item.price)}

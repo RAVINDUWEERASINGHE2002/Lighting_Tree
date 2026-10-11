@@ -84,7 +84,7 @@ export const ItemFormModal: React.FC<ItemFormModalProps> = ({
               type="number"
               required
               min="0"
-              step="10"
+              step="any"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="e.g. 250"

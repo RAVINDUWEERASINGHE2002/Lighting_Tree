@@ -63,7 +63,7 @@ export const PriceOverrideModal: React.FC<PriceOverrideModalProps> = ({
             <input
               type="number"
               min="0"
-              step="10"
+              step="any"
               autoFocus
               value={priceInput}
               onChange={(e) => setPriceInput(e.target.value)}

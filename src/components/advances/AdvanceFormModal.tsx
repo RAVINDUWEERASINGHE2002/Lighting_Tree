@@ -85,8 +85,8 @@ export const AdvanceFormModal: React.FC<AdvanceFormModalProps> = ({ isOpen, onCl
             <input
               type="number"
               required
-              min="1"
-              step="100"
+              min="0"
+              step="any"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="e.g. 5000"

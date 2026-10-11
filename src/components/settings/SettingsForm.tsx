@@ -146,7 +146,7 @@ export const SettingsForm: React.FC = () => {
               <input
                 type="number"
                 min="0"
-                step="500"
+                step="any"
                 value={monthlyRent}
                 onChange={(e) => setMonthlyRent(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold font-mono focus:ring-2 focus:ring-brand-500 focus:outline-none"
@@ -163,7 +163,7 @@ export const SettingsForm: React.FC = () => {
               <input
                 type="number"
                 min="0"
-                step="10"
+                step="any"
                 value={dailyUtilities}
                 onChange={(e) => setDailyUtilities(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold font-mono focus:ring-2 focus:ring-brand-500 focus:outline-none"
@@ -179,7 +179,7 @@ export const SettingsForm: React.FC = () => {
                 type="number"
                 min="0"
                 max="100"
-                step="1"
+                step="any"
                 value={businessSharePercent}
                 onChange={(e) => setBusinessSharePercent(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold font-mono focus:ring-2 focus:ring-brand-500 focus:outline-none"

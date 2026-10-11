@@ -81,11 +81,11 @@ export const ExpenseFormModal: React.FC<ExpenseFormModalProps> = ({ isOpen, onCl
             <input
               type="number"
               required
-              min="1"
-              step="10"
+              min="0"
+              step="any"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              placeholder="e.g. 1500"
+              placeholder="e.g. 456"
               className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold focus:ring-2 focus:ring-brand-500 focus:outline-none"
             />
           </div>
