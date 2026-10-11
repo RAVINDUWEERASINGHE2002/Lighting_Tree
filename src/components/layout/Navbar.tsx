@@ -3,12 +3,14 @@ import { Moon, Sun, Users, LogOut, Store, Wifi, WifiOff, ChevronDown } from 'luc
 import { Logo } from '../common/Logo';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
+import { dataService } from '../../services/dataService';
 import { PartnerName } from '../../types';
 
 export const Navbar: React.FC = () => {
-  const { currentUser, logout, switchDemoUser, isFirebaseActive } = useAuth();
+  const { currentUser, logout, switchDemoUser } = useAuth();
   const { theme, toggleTheme, settings } = useApp();
   const [partnerMenuOpen, setPartnerMenuOpen] = useState(false);
+  const backendType = dataService.getBackendType();
 
   const partners: PartnerName[] = ['Sandeep', 'Fab', 'Madhawa'];
 
@@ -41,22 +43,31 @@ export const Navbar: React.FC = () => {
                 <span className="hidden xs:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-gold-500/20 text-gold-300 border border-gold-500/30">
                   POS
                 </span>
-                {!isFirebaseActive && (
+                {backendType === 'supabase' && (
                   <span
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                    title="Running in Local Demo Mode. Add .env Firebase keys to activate Firestore."
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                    title="Connected to Supabase PostgreSQL Realtime Cloud"
                   >
-                    <WifiOff className="w-2.5 h-2.5" />
-                    Demo
+                    <Wifi className="w-2.5 h-2.5" />
+                    Supabase Cloud
                   </span>
                 )}
-                {isFirebaseActive && (
+                {backendType === 'firebase' && (
                   <span
                     className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                     title="Connected to Firebase Spark Plan"
                   >
                     <Wifi className="w-2.5 h-2.5" />
-                    Cloud
+                    Firebase Cloud
+                  </span>
+                )}
+                {backendType === 'local' && (
+                  <span
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                    title="Running in Local Mode. Add Supabase or Firebase keys to activate cloud sync."
+                  >
+                    <WifiOff className="w-2.5 h-2.5" />
+                    Demo
                   </span>
                 )}
               </div>

@@ -148,7 +148,35 @@ $$\text{Daily Profit} = \text{Total Sales} - \text{Daily Expenses} - \text{Daily
 
 ---
 
-## 🔥 Firebase Setup Guide (Free Spark Plan)
+## ⚡ Supabase Setup Guide (Recommended - 100% Free PostgreSQL & Realtime)
+
+Supabase provides 500 MB of free PostgreSQL storage (capable of storing 500,000+ bills without images) and instant WebSockets real-time sync across all partner devices.
+
+### Step 1: Create a Supabase Project
+1. Go to [supabase.com](https://supabase.com) and click **Sign in with GitHub**.
+2. Click **New Project** and name it `lighting-tree`.
+3. Choose a strong database password and select Region (e.g., `Singapore` or `Mumbai` for ultra-fast Sri Lanka response).
+4. Select the **Free Tier**.
+
+### Step 2: Initialize Database Schema
+1. In the left navigation menu, click **SQL Editor**.
+2. Click **New Query**.
+3. Open the `supabase_schema.sql` file in this repository, copy its entire content, paste it into the editor, and click **Run**.
+4. All tables (`shop_items`, `bills`, `expenses`, `advances`, `investments`, `settings`), Row Level Security policies, and Realtime publications are created instantly!
+
+### Step 3: Connect to Lighting Tree
+1. Go to **Project Settings** (gear icon) ➔ **API**.
+2. Copy your **Project URL** and **anon public Key**.
+3. Add them to your `.env` file (or Vercel / Netlify environment variables):
+   ```env
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-public-key
+   ```
+4. Restart your app (`npm run dev`). The top navbar will display **Supabase Cloud**, and every sale or expense entered in Thanamalwila will sync live to Sandeep and Fab's phones!
+
+---
+
+## 🔥 Firebase Setup Guide (Alternative - Free Spark Plan)
 
 Follow these steps to connect your live Firebase project:
 
