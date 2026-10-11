@@ -29,14 +29,14 @@ export function exportReportToCSV(report: ReportSummary, settings: AppSettings):
   // Partner Summary
   lines.push('"PARTNER ACCOUNTS SUMMARY"');
   lines.push(
-    '"Partner","Profit Share (Rs)","Paid for Business (Reimbursable) (Rs)","Advances Taken (Rs)","Period Balance (Rs)","Settlement Status"'
+    '"Partner","Capital Invested (Rs)","Profit Share (Rs)","Paid for Business (Reimbursable) (Rs)","Advances Taken (Rs)","Period Balance (Rs)","Settlement Status"'
   );
 
   const partners = Object.values(report.partnerSummaries);
   partners.forEach((p) => {
     const status = p.periodBalance >= 0 ? 'To Receive' : 'To Settle (Owes Business)';
     lines.push(
-      `"${p.partner}",${p.profitShareTotal},${p.paidForBusinessTotal},${p.advancesTakenTotal},${p.periodBalance},"${status}"`
+      `"${p.partner}",${p.capitalInvestedTotal},${p.profitShareTotal},${p.paidForBusinessTotal},${p.advancesTakenTotal},${p.periodBalance},"${status}"`
     );
   });
   lines.push('');
@@ -144,6 +144,7 @@ export function exportReportToPDF(report: ReportSummary, settings: AppSettings):
 
   const partnerData = Object.values(report.partnerSummaries).map((p) => [
     p.partner,
+    formatCurrency(p.capitalInvestedTotal),
     formatCurrency(p.profitShareTotal),
     formatCurrency(p.paidForBusinessTotal),
     formatCurrency(p.advancesTakenTotal),
@@ -153,18 +154,29 @@ export function exportReportToPDF(report: ReportSummary, settings: AppSettings):
 
   autoTable(doc, {
     startY: currentY,
-    head: [['Partner', 'Profit Share', 'Paid For Shop', 'Advances Taken', 'Net Balance', 'Status']],
+    head: [
+      [
+        'Partner',
+        'Capital Invested',
+        'Profit Share',
+        'Paid For Shop',
+        'Advances Taken',
+        'Net Balance',
+        'Status',
+      ],
+    ],
     body: partnerData,
     theme: 'striped',
     headStyles: { fillColor: warmGold, textColor: [40, 30, 10], fontStyle: 'bold' },
-    styles: { fontSize: 9, cellPadding: 3 },
+    styles: { fontSize: 8.5, cellPadding: 2.5 },
     columnStyles: {
       0: { fontStyle: 'bold' },
       1: { halign: 'right' },
       2: { halign: 'right' },
       3: { halign: 'right' },
-      4: { halign: 'right', fontStyle: 'bold' },
-      5: { halign: 'center', fontStyle: 'bold' },
+      4: { halign: 'right' },
+      5: { halign: 'right', fontStyle: 'bold' },
+      6: { halign: 'center', fontStyle: 'bold' },
     },
     margin: { left: 14, right: 14 },
   });

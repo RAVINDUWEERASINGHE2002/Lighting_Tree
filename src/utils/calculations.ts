@@ -2,6 +2,7 @@ import {
   PartnerName,
   Expense,
   Advance,
+  Investment,
   Bill,
   AppSettings,
   DailyCalculation,
@@ -138,7 +139,8 @@ export function calculateReportSummary(
   startDate: string,
   endDate: string,
   settings: AppSettings = DEFAULT_SETTINGS,
-  options: CalculationOptions = { protectBusinessOnLoss: true }
+  options: CalculationOptions = { protectBusinessOnLoss: true },
+  investments: Investment[] = []
 ): ReportSummary {
   const partners =
     settings.partners && settings.partners.length > 0 ? settings.partners : DEFAULT_PARTNERS;
@@ -177,10 +179,11 @@ export function calculateReportSummary(
   const businessAccountTotal = dailyBreakdown.reduce((sum, d) => sum + d.businessShare, 0);
 
   // Per Partner calculation:
-  // balance = sum of daily profit shares + money paid for business - advances taken
+  // balance = capital invested + sum of daily profit shares + money paid for business - advances taken
   const partnerSummaries: Record<PartnerName, PartnerAccountSummary> = {
     Sandeep: {
       partner: 'Sandeep',
+      capitalInvestedTotal: 0,
       profitShareTotal: 0,
       paidForBusinessTotal: 0,
       advancesTakenTotal: 0,
@@ -189,6 +192,7 @@ export function calculateReportSummary(
     },
     Fab: {
       partner: 'Fab',
+      capitalInvestedTotal: 0,
       profitShareTotal: 0,
       paidForBusinessTotal: 0,
       advancesTakenTotal: 0,
@@ -197,6 +201,7 @@ export function calculateReportSummary(
     },
     Madhawa: {
       partner: 'Madhawa',
+      capitalInvestedTotal: 0,
       profitShareTotal: 0,
       paidForBusinessTotal: 0,
       advancesTakenTotal: 0,
@@ -206,6 +211,11 @@ export function calculateReportSummary(
   };
 
   partners.forEach((partner) => {
+    // 0. Capital invested by this partner in period
+    const capitalInvestedTotal = investments
+      .filter((inv) => inv.date >= startDate && inv.date <= endDate && inv.partner === partner)
+      .reduce((sum, inv) => sum + (inv.amount || 0), 0);
+
     // 1. Sum of profit share from daily breakdowns in the period
     const profitShareTotal = dailyBreakdown.reduce(
       (sum, day) => sum + (day.partnerShares[partner] || 0),
@@ -222,13 +232,14 @@ export function calculateReportSummary(
       .filter((a) => a.partner === partner)
       .reduce((sum, a) => sum + (a.amount || 0), 0);
 
-    // 4. Period Balance
-    const periodBalance = profitShareTotal + paidForBusinessTotal - advancesTakenTotal;
+    // 4. Period Balance: Capital Invested + Profit Share + Paid for Business - Advances Taken
+    const periodBalance = capitalInvestedTotal + profitShareTotal + paidForBusinessTotal - advancesTakenTotal;
 
     const overallBalance = periodBalance;
 
     partnerSummaries[partner] = {
       partner,
+      capitalInvestedTotal: Math.round(capitalInvestedTotal * 100) / 100,
       profitShareTotal: Math.round(profitShareTotal * 100) / 100,
       paidForBusinessTotal: Math.round(paidForBusinessTotal * 100) / 100,
       advancesTakenTotal: Math.round(advancesTakenTotal * 100) / 100,

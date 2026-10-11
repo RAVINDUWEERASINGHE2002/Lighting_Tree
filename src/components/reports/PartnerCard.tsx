@@ -5,6 +5,7 @@ import {
   ArrowDownRight,
   CheckCircle2,
   AlertCircle,
+  Coins,
 } from 'lucide-react';
 import { PartnerAccountSummary } from '../../types';
 import { formatCurrency } from '../../utils/formatters';
@@ -52,6 +53,18 @@ export const PartnerCard: React.FC<PartnerCardProps> = ({ summary, role }) => {
 
         {/* Breakdown Items */}
         <div className="space-y-2 py-3 border-y border-slate-100 dark:border-slate-800/80 text-xs">
+          {summary.capitalInvestedTotal > 0 && (
+            <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <Coins className="w-3.5 h-3.5 text-amber-500" />
+                Capital Invested (+):
+              </span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400 font-mono">
+                +{formatCurrency(summary.capitalInvestedTotal)}
+              </span>
+            </div>
+          )}
+
           <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
             <span className="flex items-center gap-1.5">
               <TrendingUp className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />

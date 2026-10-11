@@ -54,6 +54,15 @@ export interface Advance {
   createdAt: string;
 }
 
+export interface Investment {
+  id: string;
+  partner: PartnerName;
+  date: string; // YYYY-MM-DD
+  amount: number; // in Rs
+  note: string; // e.g. "Initial business capital", "Shop renovation investment"
+  createdAt: string;
+}
+
 export interface AppSettings {
   shopName: string; // "Lighting Tree"
   address: string; // "Lighting Tree, Opposite Busstand, Thanamalwila"
@@ -84,10 +93,11 @@ export interface DailyCalculation {
 
 export interface PartnerAccountSummary {
   partner: PartnerName;
+  capitalInvestedTotal: number; // Initial capital / investments put into business
   profitShareTotal: number;
   paidForBusinessTotal: number; // money paid by partner from own pocket credited back
   advancesTakenTotal: number; // advances deducted
-  periodBalance: number; // profitShare + paidForBusiness - advancesTaken
+  periodBalance: number; // capitalInvested + profitShare + paidForBusiness - advancesTaken
   overallBalance: number; // cumulative balance
 }
 

@@ -11,7 +11,7 @@ import {
   orderBy,
 } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '../config/firebase';
-import { ShopItem, Bill, Expense, Advance, AppSettings } from '../types';
+import { ShopItem, Bill, Expense, Advance, Investment, AppSettings } from '../types';
 import { DEFAULT_SETTINGS } from '../utils/calculations';
 import { getTodayColomboDate } from '../utils/formatters';
 
@@ -20,9 +20,17 @@ const STORAGE_ITEMS = 'lt_items';
 const STORAGE_BILLS = 'lt_bills';
 const STORAGE_EXPENSES = 'lt_expenses';
 const STORAGE_ADVANCES = 'lt_advances';
+const STORAGE_INVESTMENTS = 'lt_investments';
 const STORAGE_SETTINGS = 'lt_settings';
 
 export const INITIAL_DEMO_ITEMS: ShopItem[] = [
+  {
+    id: 'item-0',
+    name: 'Fresh Curd with Mee Pani (Wild Honey)',
+    price: 350,
+    category: 'Sweets',
+    isActive: true,
+  },
   {
     id: 'item-1',
     name: 'Kithul Hakuru Sweet Portion',
@@ -212,6 +220,33 @@ export const INITIAL_DEMO_ADVANCES: Advance[] = [
     date: getTodayColomboDate(),
     amount: 500,
     note: 'Daily petty cash advance',
+    createdAt: new Date().toISOString(),
+  },
+];
+
+export const INITIAL_DEMO_INVESTMENTS: Investment[] = [
+  {
+    id: 'inv-demo-1',
+    partner: 'Sandeep',
+    date: getTodayColomboDate(),
+    amount: 150000,
+    note: 'Initial shop setup & renovation investment',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'inv-demo-2',
+    partner: 'Fab',
+    date: getTodayColomboDate(),
+    amount: 150000,
+    note: 'Initial business capital & kitchen equipment',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'inv-demo-3',
+    partner: 'Madhawa',
+    date: getTodayColomboDate(),
+    amount: 50000,
+    note: 'Initial working float & inventory capital',
     createdAt: new Date().toISOString(),
   },
 ];
@@ -528,6 +563,63 @@ export const dataService = {
     window.dispatchEvent(new Event('storage'));
   },
 
+  // === INVESTMENTS (INITIAL CAPITAL) ===
+  async getInvestments(): Promise<Investment[]> {
+    if (isFirebaseConfigured && db) {
+      const snap = await getDocs(query(collection(db, 'investments'), orderBy('date', 'desc')));
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Investment));
+    }
+    return getLocal<Investment[]>(STORAGE_INVESTMENTS, INITIAL_DEMO_INVESTMENTS);
+  },
+
+  subscribeInvestments(callback: (investments: Investment[]) => void): () => void {
+    if (isFirebaseConfigured && db) {
+      const q = query(collection(db, 'investments'), orderBy('date', 'desc'));
+      return onSnapshot(
+        q,
+        (snap) => {
+          const investments = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Investment));
+          callback(investments);
+        },
+        (err) => {
+          console.warn('Firestore investments error', err);
+          callback(getLocal<Investment[]>(STORAGE_INVESTMENTS, INITIAL_DEMO_INVESTMENTS));
+        }
+      );
+    }
+
+    callback(getLocal<Investment[]>(STORAGE_INVESTMENTS, INITIAL_DEMO_INVESTMENTS));
+    const handler = () =>
+      callback(getLocal<Investment[]>(STORAGE_INVESTMENTS, INITIAL_DEMO_INVESTMENTS));
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  },
+
+  async addInvestment(investment: Omit<Investment, 'id'>): Promise<Investment> {
+    if (isFirebaseConfigured && db) {
+      const ref = await addDoc(collection(db, 'investments'), investment);
+      return { ...investment, id: ref.id } as Investment;
+    }
+    const investments = getLocal<Investment[]>(STORAGE_INVESTMENTS, INITIAL_DEMO_INVESTMENTS);
+    const newInvestment: Investment = { ...investment, id: `inv-${Date.now()}` };
+    investments.unshift(newInvestment);
+    setLocal(STORAGE_INVESTMENTS, investments);
+    window.dispatchEvent(new Event('storage'));
+    return newInvestment;
+  },
+
+  async deleteInvestment(id: string): Promise<void> {
+    if (isFirebaseConfigured && db) {
+      await deleteDoc(doc(db, 'investments', id));
+      return;
+    }
+    const investments = getLocal<Investment[]>(STORAGE_INVESTMENTS, INITIAL_DEMO_INVESTMENTS).filter(
+      (inv) => inv.id !== id
+    );
+    setLocal(STORAGE_INVESTMENTS, investments);
+    window.dispatchEvent(new Event('storage'));
+  },
+
   // === SETTINGS ===
   async getSettings(): Promise<AppSettings> {
     if (isFirebaseConfigured && db) {
@@ -583,6 +675,7 @@ export const dataService = {
     setLocal(STORAGE_BILLS, INITIAL_DEMO_BILLS);
     setLocal(STORAGE_EXPENSES, INITIAL_DEMO_EXPENSES);
     setLocal(STORAGE_ADVANCES, INITIAL_DEMO_ADVANCES);
+    setLocal(STORAGE_INVESTMENTS, INITIAL_DEMO_INVESTMENTS);
     setLocal(STORAGE_SETTINGS, DEFAULT_SETTINGS);
     window.dispatchEvent(new Event('storage'));
   },

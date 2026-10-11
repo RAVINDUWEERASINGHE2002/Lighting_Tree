@@ -4,11 +4,13 @@ import {
   FileSpreadsheet,
   FileText,
   Printer,
+  Coins,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { PartnerCard } from '../components/reports/PartnerCard';
 import { DailyBreakdownTable } from '../components/reports/DailyBreakdownTable';
 import { PrintableReport } from '../components/reports/PrintableReport';
+import { InvestmentFormModal } from '../components/investments/InvestmentFormModal';
 import { calculateReportSummary } from '../utils/calculations';
 import {
   formatCurrency,
@@ -18,7 +20,8 @@ import {
 import { exportReportToCSV, exportReportToPDF } from '../utils/exportUtils';
 
 export const ReportsPage: React.FC = () => {
-  const { bills, expenses, advances, settings } = useApp();
+  const { bills, expenses, advances, investments, settings, addInvestment } = useApp();
+  const [investModalOpen, setInvestModalOpen] = useState(false);
 
   const today = getTodayColomboDate();
   const firstOfMonth = getFirstDayOfCurrentMonth();
@@ -42,8 +45,17 @@ export const ReportsPage: React.FC = () => {
 
   // Compute financial report
   const report = useMemo(() => {
-    return calculateReportSummary(bills, expenses, advances, startDate, endDate, settings);
-  }, [bills, expenses, advances, startDate, endDate, settings]);
+    return calculateReportSummary(
+      bills,
+      expenses,
+      advances,
+      startDate,
+      endDate,
+      settings,
+      { protectBusinessOnLoss: true },
+      investments
+    );
+  }, [bills, expenses, advances, investments, startDate, endDate, settings]);
 
   const handlePrint = () => {
     window.print();
@@ -209,13 +221,22 @@ export const ReportsPage: React.FC = () => {
 
         {/* 3 Partner Account Balance Cards */}
         <div>
-          <div className="flex items-center justify-between mb-2.5">
-            <h3 className="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">
-              Partner Accounts & Current Balance
-            </h3>
-            <span className="text-xs text-slate-400 font-medium">
-              30% Profit Split + Reimbursable Paid - Advances
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+            <div>
+              <h3 className="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100">
+                Partner Accounts & Current Balance
+              </h3>
+              <p className="text-xs text-slate-400 font-medium">
+                Initial Capital + 30% Profit Split + Reimbursable Paid - Advances
+              </p>
+            </div>
+            <button
+              onClick={() => setInvestModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-xs font-bold transition-all w-fit"
+            >
+              <Coins className="w-3.5 h-3.5" />
+              <span>Record Capital</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
@@ -237,6 +258,12 @@ export const ReportsPage: React.FC = () => {
         {/* Daily Breakdown Ledger Table */}
         <DailyBreakdownTable dailyBreakdown={report.dailyBreakdown} />
       </div>
+
+      <InvestmentFormModal
+        isOpen={investModalOpen}
+        onClose={() => setInvestModalOpen(false)}
+        onSave={addInvestment}
+      />
     </div>
   );
 };

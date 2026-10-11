@@ -134,6 +134,7 @@ export const PrintableReport: React.FC<PrintableReportProps> = ({ report, settin
           <thead>
             <tr style={{ backgroundColor: '#166443', color: '#ffffff', textAlign: 'left' }}>
               <th style={{ padding: '6px 8px' }}>Partner</th>
+              <th style={{ padding: '6px 8px', textAlign: 'right' }}>Capital Invested (+)</th>
               <th style={{ padding: '6px 8px', textAlign: 'right' }}>Profit Share (30%)</th>
               <th style={{ padding: '6px 8px', textAlign: 'right' }}>Paid For Business (+)</th>
               <th style={{ padding: '6px 8px', textAlign: 'right' }}>Advances Taken (-)</th>
@@ -149,6 +150,9 @@ export const PrintableReport: React.FC<PrintableReportProps> = ({ report, settin
               return (
                 <tr key={p.partner} style={{ borderBottom: '1px solid #eee' }}>
                   <td style={{ padding: '6px 8px', fontWeight: 'bold' }}>{p.partner}</td>
+                  <td style={{ padding: '6px 8px', textAlign: 'right', color: '#166443' }}>
+                    +{formatCurrency(p.capitalInvestedTotal)}
+                  </td>
                   <td style={{ padding: '6px 8px', textAlign: 'right' }}>
                     {formatCurrency(p.profitShareTotal)}
                   </td>

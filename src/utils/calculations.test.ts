@@ -5,7 +5,7 @@ import {
   calculateReportSummary,
   DEFAULT_SETTINGS,
 } from './calculations';
-import { Bill, Expense, Advance } from '../types';
+import { Bill, Expense, Advance, Investment } from '../types';
 
 describe('Profit and Partner Calculations', () => {
   const customSettings = {
@@ -271,4 +271,78 @@ describe('Profit and Partner Calculations', () => {
     expect(report.partnerSummaries.Madhawa.advancesTakenTotal).toBe(3000);
     expect(report.partnerSummaries.Madhawa.periodBalance).toBe(-1425);
   });
+
+  it('correctly credits partner initial capital investments to period balance', () => {
+    const investments: Investment[] = [
+      {
+        id: 'inv1',
+        partner: 'Sandeep',
+        date: '2026-10-01',
+        amount: 50000,
+        note: 'Initial shop setup capital',
+        createdAt: '2026-10-01T08:00:00Z',
+      },
+      {
+        id: 'inv2',
+        partner: 'Fab',
+        date: '2026-10-01',
+        amount: 50000,
+        note: 'Shop equipment & refrigeration capital',
+        createdAt: '2026-10-01T08:00:00Z',
+      },
+      {
+        id: 'inv3',
+        partner: 'Madhawa',
+        date: '2026-10-01',
+        amount: 25000,
+        note: 'Cash float & ingredients initial capital',
+        createdAt: '2026-10-01T08:00:00Z',
+      },
+    ];
+
+    const bills: Bill[] = [
+      {
+        id: 'b-inv',
+        billNumber: 'LT-20261001-001',
+        date: '2026-10-01',
+        time: '12:00:00',
+        items: [],
+        subtotal: 12500,
+        discount: 0,
+        grandTotal: 12500,
+        cashier: 'Madhawa',
+        paymentMethod: 'cash',
+        createdAt: '2026-10-01T12:00:00Z',
+      },
+    ];
+
+    // Period: 2026-10-01 to 2026-10-01 (1 day)
+    // Daily costs: 250 (utils) + 1000 (rent) = 1250
+    // Net profit = 12500 - 1250 = 11250
+    // Business share (10%) = 1125
+    // Remaining profit = 10125 => 3375 each for Sandeep, Fab, Madhawa
+    const report = calculateReportSummary(
+      bills,
+      [],
+      [],
+      '2026-10-01',
+      '2026-10-01',
+      customSettings,
+      { protectBusinessOnLoss: true },
+      investments
+    );
+
+    expect(report.partnerSummaries.Sandeep.capitalInvestedTotal).toBe(50000);
+    expect(report.partnerSummaries.Sandeep.profitShareTotal).toBe(3375);
+    expect(report.partnerSummaries.Sandeep.periodBalance).toBe(53375);
+
+    expect(report.partnerSummaries.Fab.capitalInvestedTotal).toBe(50000);
+    expect(report.partnerSummaries.Fab.profitShareTotal).toBe(3375);
+    expect(report.partnerSummaries.Fab.periodBalance).toBe(53375);
+
+    expect(report.partnerSummaries.Madhawa.capitalInvestedTotal).toBe(25000);
+    expect(report.partnerSummaries.Madhawa.profitShareTotal).toBe(3375);
+    expect(report.partnerSummaries.Madhawa.periodBalance).toBe(28375);
+  });
 });
+

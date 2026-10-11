@@ -4,6 +4,7 @@ import {
   Bill,
   Expense,
   Advance,
+  Investment,
   AppSettings,
   BillItem,
   PartnerName,
@@ -29,6 +30,7 @@ interface AppContextType {
   todayBills: Bill[];
   expenses: Expense[];
   advances: Advance[];
+  investments: Investment[];
   settings: AppSettings;
   theme: 'light' | 'dark';
   toasts: ToastMessage[];
@@ -79,6 +81,15 @@ interface AppContextType {
   }) => Promise<void>;
   deleteAdvance: (advanceId: string) => Promise<void>;
 
+  // Investment (Initial Capital) Actions
+  addInvestment: (investment: {
+    partner: PartnerName;
+    date: string;
+    amount: number;
+    note: string;
+  }) => Promise<void>;
+  deleteInvestment: (investmentId: string) => Promise<void>;
+
   // Settings Actions
   updateSettings: (newSettings: Partial<AppSettings>) => Promise<void>;
   resetToDemoData: () => void;
@@ -91,6 +102,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [bills, setBills] = useState<Bill[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [advances, setAdvances] = useState<Advance[]>([]);
+  const [investments, setInvestments] = useState<Investment[]>([]);
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState<boolean>(true);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -135,7 +147,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     let countLoaded = 0;
     const checkDone = () => {
       countLoaded++;
-      if (countLoaded >= 5) setLoading(false);
+      if (countLoaded >= 6) setLoading(false);
     };
 
     const unsubItems = dataService.subscribeItems((data) => {
@@ -158,6 +170,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       checkDone();
     });
 
+    const unsubInvestments = dataService.subscribeInvestments((data) => {
+      setInvestments(data);
+      checkDone();
+    });
+
     const unsubSettings = dataService.subscribeSettings((data) => {
       setSettings(data);
       checkDone();
@@ -168,6 +185,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       unsubBills();
       unsubExpenses();
       unsubAdvances();
+      unsubInvestments();
       unsubSettings();
     };
   }, []);
@@ -391,6 +409,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  // Investments (Initial Capital)
+  const addInvestment = async (inv: {
+    partner: PartnerName;
+    date: string;
+    amount: number;
+    note: string;
+  }) => {
+    try {
+      await dataService.addInvestment({
+        ...inv,
+        createdAt: new Date().toISOString(),
+      });
+      showToast(`Capital investment for ${inv.partner} recorded`, 'success');
+    } catch (err: any) {
+      showToast(`Failed to record investment: ${err.message}`, 'error');
+    }
+  };
+
+  const deleteInvestment = async (investmentId: string) => {
+    try {
+      await dataService.deleteInvestment(investmentId);
+      showToast('Investment removed', 'info');
+    } catch (err: any) {
+      showToast(`Failed to delete investment: ${err.message}`, 'error');
+    }
+  };
+
   // Settings
   const updateSettings = async (newSettings: Partial<AppSettings>) => {
     try {
@@ -416,6 +461,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         todayBills,
         expenses,
         advances,
+        investments,
         settings,
         theme,
         toasts,
@@ -441,6 +487,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteExpense,
         addAdvance,
         deleteAdvance,
+        addInvestment,
+        deleteInvestment,
         updateSettings,
         resetToDemoData,
       }}
