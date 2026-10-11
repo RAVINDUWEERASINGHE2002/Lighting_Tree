@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" fill="none">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0A2F20"/>
+      <stop offset="40%" stop-color="#144A34"/>
+      <stop offset="75%" stop-color="#23684B"/>
+      <stop offset="100%" stop-color="#3D825E"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="75%" cy="35%" r="40%">
+      <stop offset="0%" stop-color="#FEF08A" stop-opacity="0.95"/>
+      <stop offset="20%" stop-color="#FCD34D" stop-opacity="0.75"/>
+      <stop offset="50%" stop-color="#D4AF37" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#144A34" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hillFar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E5C40" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#0F3825" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="hillMid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#165237"/>
+      <stop offset="100%" stop-color="#0A281A"/>
+    </linearGradient>
+    <linearGradient id="hillFore" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#103D28"/>
+      <stop offset="100%" stop-color="#061C12"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky Base -->
+  <rect width="1200" height="400" fill="url(#skyGrad)"/>
+
+  <!-- Sun & Morning Radiance over Thanamalwila -->
+  <rect width="1200" height="400" fill="url(#sun)"/>
+  <circle cx="900" cy="140" r="55" fill="#FEF08A" opacity="0.85"/>
+
+  <!-- Birds in distance -->
+  <path d="M420 80 Q425 75 430 80 Q435 75 440 80" stroke="#FDE68A" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <path d="M445 92 Q449 88 453 92 Q457 88 461 92" stroke="#FDE68A" stroke-width="1.2" fill="none" opacity="0.5"/>
+  <path d="M410 96 Q414 92 418 96 Q422 92 426 96" stroke="#FDE68A" stroke-width="1.2" fill="none" opacity="0.4"/>
+
+  <!-- Distant Mountain Ranges (Uva Province Hills) -->
+  <path d="M0 240 Q180 160 360 210 T720 180 T1050 200 Q1140 215 1200 230 L1200 400 L0 400 Z" fill="url(#hillFar)"/>
+
+  <!-- Mid-ground Rolling Hills & Forest Canopy -->
+  <path d="M0 270 Q240 210 480 260 T920 230 Q1060 220 1200 250 L1200 400 L0 400 Z" fill="url(#hillMid)"/>
+
+  <!-- Foreground Landscape & Trees -->
+  <path d="M0 320 Q200 280 400 310 T850 290 Q1050 280 1200 310 L1200 400 L0 400 Z" fill="url(#hillFore)"/>
+
+  <!-- Silhouetted Tropical Palms & Trees -->
+  <!-- Palm 1 Left -->
+  <path d="M85 360 Q90 280 110 240 Q112 280 102 360 Z" fill="#072015"/>
+  <path d="M110 240 Q80 220 60 235 M110 240 Q100 210 90 220 M110 240 Q125 210 135 225 M110 240 Q145 225 155 240 M110 240 Q130 250 140 265 M110 240 Q85 245 75 258" stroke="#072015" stroke-width="3" fill="none"/>
+
+  <!-- Palm 2 Right Mid -->
+  <path d="M1040 370 Q1035 290 1020 250 Q1024 290 1032 370 Z" fill="#072015"/>
+  <path d="M1020 250 Q990 230 970 245 M1020 250 Q1010 220 1000 230 M1020 250 Q1035 220 1045 235 M1020 250 Q1055 235 1065 250 M1020 250 Q1040 260 1050 275 M1020 250 Q995 255 985 268" stroke="#072015" stroke-width="3" fill="none"/>
+
+  <!-- Big Thanamalwila Shade Tree (Left-Center) -->
+  <path d="M260 380 Q258 310 250 265 Q262 310 275 380 Z" fill="#051910"/>
+  <circle cx="230" cy="245" r="38" fill="#09271A"/>
+  <circle cx="270" cy="235" r="44" fill="#0B2F20"/>
+  <circle cx="250" cy="210" r="35" fill="#0E3826"/>
+  <circle cx="295" cy="250" r="32" fill="#082317"/>
+
+  <!-- Warm ambient glow on hills -->
+  <ellipse cx="900" cy="280" rx="200" ry="25" fill="#D4AF37" opacity="0.12"/>
+
+  <!-- Soft Roadway Curve suggesting Thanamalwila Junction -->
+  <path d="M500 400 Q650 340 760 320 T900 310" stroke="#D4AF37" stroke-width="2" stroke-dasharray="8 6" opacity="0.2" fill="none"/>
+</svg>

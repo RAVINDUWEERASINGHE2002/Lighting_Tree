@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only authenticated partners (Sandeep, Fab, Madhawa) can read and write POS and financial data
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Menu and Item Management
+    match /items/{itemId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Customer Bills and Sales Records
+    match /bills/{billId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Business Expenses & Investments
+    match /expenses/{expenseId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Partner Advances
+    match /advances/{advanceId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Shop Settings and Parameters
+    match /settings/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Fallback rule
+    match /{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
